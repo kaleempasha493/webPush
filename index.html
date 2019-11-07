@@ -19,7 +19,7 @@
         let sw = await navigator.serviceWorker.ready;
         let push = await sw.pushManager.subscribe({
             userVisibleOnly:true,
-            applicationServerKey:'BFRkKdidrkTV_D_Pd_smLGDiarY4VbWb5CHojeY3AjCivvLjJuCDQvQcL9fwgDiucUkeUvcyyw9exv3ULM7vRNQ'
+            applicationServerKey:'BF4RW1zzQafoosp6V9ADSLLujAEfo_i1zYqVX6NdYTc92MXKna7h0CQXdNYe39wDnptkOrgjcEYr8cDmOC5S28Y'
         })
         console.log(JSON.stringify(push))
         alert("We will store this in DB   ---> "+JSON.stringify(push))
