@@ -1,12 +1,12 @@
 let push = require('web-push');
 
-let vapidkeys = {
-    publicKey: 'BFRkKdidrkTV_D_Pd_smLGDiarY4VbWb5CHojeY3AjCivvLjJuCDQvQcL9fwgDiucUkeUvcyyw9exv3ULM7vRNQ',
-    privateKey: 'awYd3v07b93NZWwIJ-eGTig6lAfEzQv_45EvKidwua4'
-  }
+let vapidkeys = push.generateVAPIDKeys();
 
-  push.setVapidDetails('kaleempasha493@gmail.com', vapidkeys.publicKey, vapidkeys.privateKey)
+push.setVapidDetails('mailto:kaleempasha493@gmail.com', vapidkeys.publicKey, vapidkeys.privateKey)
 
-  let sub = {}
+ let sub = {
+  publicKey: 'BLBi-btyG9lVdFHsY9mHC_S1rrYYT4qbpjlwxd4uMWYD2_2HgVPm4iH_LL2de8-zQswCqd2EQ7hBT6fWS0IeA3U',
+  privateKey: 'DZKrkiZmaBeMgoAhDYJsxDqVu4MxzOxXbmU-V8w9Gfg'
+}
 
-  push.sendNotification(sub, 'text message')
+ push.sendNotification(sub, 'text message')
