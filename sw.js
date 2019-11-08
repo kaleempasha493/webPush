@@ -15,6 +15,6 @@ self.addEventListener('push', function(e) {
       ]
     };
     e.waitUntil(
-      self.registration.showNotification('Hello world 2 !', options)
+      self.registration.showNotification('Hello world 3 !', options)
     );
   });
