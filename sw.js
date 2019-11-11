@@ -15,7 +15,29 @@ self.addEventListener('push', function(e) {
       ]
     };
     e.waitUntil(
-      self.registration.showNotification('Hello push 888 !', options)
+      self.registration.showNotification('Want to redirect google, THEN CLICK !', options)
     );
   });
+
+  self.addEventListener('notificationclose', function(e) {
+    var notification = e.notification;
+    var primaryKey = notification.data.primaryKey;
+  
+    console.log('Closed notification: ' + primaryKey);
+  });
+
+  self.addEventListener('notificationclick', function(e) {
+    var notification = e.notification;
+    var primaryKey = notification.data.primaryKey;
+    var action = e.action;
+  
+    if (action === 'close') {
+      notification.close();
+    } else {
+      clients.openWindow('https://www.google.com');
+      notification.close();
+    }
+  });
+
+
  
