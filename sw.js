@@ -15,7 +15,7 @@ self.addEventListener('push', function(e) {
       ]
     };
     e.waitUntil(
-      self.registration.showNotification('Hello push 777 !', options)
+      self.registration.showNotification('Hello push 888 !', options)
     );
   });
  
