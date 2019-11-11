@@ -12,7 +12,9 @@
     <script>
     addEventListener('load', async () =>{
         let sw = await navigator.serviceWorker.register('./sw.js')
+        sw.update();
         console.log(sw)
+        alert("done, click on subscribe. Otherwise it will be executed.");
     })
 
     async function subscribe(){
