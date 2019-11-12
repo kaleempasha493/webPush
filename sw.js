@@ -1,6 +1,6 @@
 self.addEventListener('push', function(e) {
-  if (event.data) {
-    console.log("push "+event.data.json());
+  if (e.data) {
+    console.log("push "+e.data.json());
   }
     var options = {
       body: 'Tommorroe will on instagram',
