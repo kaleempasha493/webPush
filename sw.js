@@ -1,4 +1,7 @@
 self.addEventListener('push', function(e) {
+  if (event.data) {
+    console.log("push "+event.data.json());
+  }
     var options = {
       body: 'Tommorroe will on instagram',
       icon: 'images/example.png',
@@ -8,7 +11,7 @@ self.addEventListener('push', function(e) {
         primaryKey: '2'
       },
       actions: [
-        {action: 'explore', title: 'Remind me later',
+        {action: 'explore', title: 'Remind me now',
           icon: 'images/checkmark.png'},
         {action: 'close', title: 'Close',
           icon: 'images/xmark.png'},
@@ -40,7 +43,9 @@ self.addEventListener('push', function(e) {
   });
 
   self.addEventListener('message', event => {
-    console.log(event);
+    if (event.data) {
+      console.log("message "+event.data.json());
+    }
     if (event.data === 'skipWaiting') {
       self.skipWaiting();
     }
