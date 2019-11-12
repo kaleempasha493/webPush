@@ -34,7 +34,7 @@ self.addEventListener('push', function(e) {
     if (action === 'close') {
       notification.close();
     } else {
-      event.waitUntil(clients.openWindow(event.notification.data.url));
+      ewaitUntil(clients.openWindow(e.notification.data.url));
       //clients.openWindow('https://web.whatsup.com/');
       notification.close();
     }
