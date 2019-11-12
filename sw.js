@@ -1,7 +1,4 @@
 self.addEventListener('push', function(e) {
-  if (e.data) {
-    console.log("push "+e.data.json());
-  }
     var options = {
       body: 'Tommorroe will on instagram',
       icon: 'images/example.png',
@@ -37,7 +34,8 @@ self.addEventListener('push', function(e) {
     if (action === 'close') {
       notification.close();
     } else {
-      clients.openWindow('https://web.whatsup.com/');
+      event.waitUntil(clients.openWindow(event.notification.data.url));
+      //clients.openWindow('https://web.whatsup.com/');
       notification.close();
     }
   });
