@@ -14,15 +14,9 @@ self.addEventListener("push", function (a) {
         var targetUrl = "https://www.semstores.com/jsonFile/edit.json?endpoint=" + a.endpoint;
           if (null == a)
               return void K().then(T).catch(function () { });
-          return fetch(proxyUrl + targetUrl , {
-            headers : { 
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-             }
-          }).then(function(response) {
-            return response.json()
-          }).then(function(json) {
-            console.log('parsed json', json)
+          return fetch(proxyUrl + targetUrl).then(function(response) {
+            let text = await response.text();
+            console.log('text ', text)
           }).catch(function(ex) {
             console.log('parsing failed', ex)
           })
