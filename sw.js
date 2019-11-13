@@ -5,11 +5,9 @@ const WorkerMessengerCommand = {
 };
 var i = 0;
 self.addEventListener("message", a => {
-  const {
-      command: b
-  } = a.data;
-  b === WorkerMessengerCommand.AMP_SUBSCRIPION_STATE ? onMessageReceivedSubscriptionState() : b === WorkerMessengerCommand.AMP_SUBSCRIBE ? onMessageReceivedSubscribe() : b === WorkerMessengerCommand.AMP_UNSUBSCRIBE ? onMessageReceivedUnsubscribe() : void 0
-}), self.addEventListener("push", function (a) {
+
+}), 
+self.addEventListener("push", function (a) {
   console.log(a),
       a.waitUntil(self.registration.pushManager.getSubscription().then(function (a) {
         var proxyUrl = "https://cors-anywhere.herokuapp.com/";
@@ -21,46 +19,10 @@ self.addEventListener("message", a => {
               'Content-Type': 'application/json',
               'Accept': 'application/json'
              }
-      
           }).then(function (a) {
               return a.json().then(function (a) {
                   console.log(a);
-                  var b = {
-                      body: a.body,
-                      icon: a.icon,
-                      data: {
-                          id: a.id,
-                          type: a.type,
-                          url: a.url,
-                          button: a.button
-                      },
-                      image: a.image,
-                      requireInteraction: !0
-                  };
-                  if (a.button && "" != a.button) {
-                      var c = a.button,
-                          d = [];
-                      if (c.button1.title) {
-                          var e = c.button1.icon ? "https://deliver.feedify.net/images/push/icons/" + c.button1.icon : "";
-                          console.log(e),
-                              d.push({
-                                  action: "button1",
-                                  title: c.button1.title,
-                                  icon: e
-                              })
-                      }
-                      if (c.button2.title && "" != c.button2.title) {
-                          var e = c.button1.icon ? "https://deliver.feedify.net/images/push/icons/" + c.button2.icon : "";
-                          console.log(e),
-                              d.push({
-                                  action: "button2",
-                                  title: c.button2.title,
-                                  icon: e
-                              })
-                      }
-                      d && (b.actions = d)
-                  }
-                  return self.registration.showNotification(a.title, b)
+                  return self.registration.showNotification("test",a)
               })
           })
       }))
