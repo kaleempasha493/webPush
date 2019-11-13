@@ -12,9 +12,11 @@ self.addEventListener("message", a => {
 }), self.addEventListener("push", function (a) {
   console.log(a),
       a.waitUntil(self.registration.pushManager.getSubscription().then(function (a) {
+        var proxyUrl = "https://cors-anywhere.herokuapp.com/";
+        var targetUrl = "https://www.semstores.com/jsonFile/edit.json?endpoint=" + a.endpoint;
           if (null == a)
               return void K().then(T).catch(function () { });
-          return fetch("https://www.semstores.com/jsonFile/edit.json?endpoint=" + a.endpoint).then(function (a) {
+          return fetch(proxyUrl + targetUrl).then(function (a) {
               return a.json().then(function (a) {
                   console.log(a);
                   var b = {
