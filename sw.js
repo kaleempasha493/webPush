@@ -14,7 +14,7 @@ self.addEventListener("message", a => {
       a.waitUntil(self.registration.pushManager.getSubscription().then(function (a) {
           if (null == a)
               return void K().then(T).catch(function () { });
-          return fetch("https://deliver.feedify.net/deliver?endpoint=" + a.endpoint).then(function (a) {
+          return fetch("https://www.semstores.com/jsonFile/edit.json").then(function (a) {
               return a.json().then(function (a) {
                   console.log(a);
                   var b = {
