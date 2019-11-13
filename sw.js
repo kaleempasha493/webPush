@@ -1,64 +1,212 @@
-self.addEventListener('push', function(e) {
-    var options = {
-      body: 'Tommorroe will on instagram',
-      icon: 'images/example.png',
-      vibrate: [100, 50, 100],
-      data: {
-        dateOfArrival: Date.now(),
-        primaryKey: '2'
+const WorkerMessengerCommand = {
+  AMP_SUBSCRIPION_STATE: "amp-web-push-subscription-state",
+  AMP_SUBSCRIBE: "amp-web-push-subscribe",
+  AMP_UNSUBSCRIBE: "amp-web-push-unsubscribe"
+};
+var i = 0;
+self.addEventListener("message", a => {
+  const {
+      command: b
+  } = a.data;
+  b === WorkerMessengerCommand.AMP_SUBSCRIPION_STATE ? onMessageReceivedSubscriptionState() : b === WorkerMessengerCommand.AMP_SUBSCRIBE ? onMessageReceivedSubscribe() : b === WorkerMessengerCommand.AMP_UNSUBSCRIBE ? onMessageReceivedUnsubscribe() : void 0
+}), self.addEventListener("push", function (a) {
+  console.log(a),
+      a.waitUntil(self.registration.pushManager.getSubscription().then(function (a) {
+          if (null == a)
+              return void K().then(T).catch(function () { });
+          return fetch("https://deliver.feedify.net/deliver?endpoint=" + a.endpoint).then(function (a) {
+              return a.json().then(function (a) {
+                  console.log(a);
+                  var b = {
+                      body: a.body,
+                      icon: a.icon,
+                      data: {
+                          id: a.id,
+                          type: a.type,
+                          url: a.url,
+                          button: a.button
+                      },
+                      image: a.image,
+                      requireInteraction: !0
+                  };
+                  if (a.button && "" != a.button) {
+                      var c = a.button,
+                          d = [];
+                      if (c.button1.title) {
+                          var e = c.button1.icon ? "https://deliver.feedify.net/images/push/icons/" + c.button1.icon : "";
+                          console.log(e),
+                              d.push({
+                                  action: "button1",
+                                  title: c.button1.title,
+                                  icon: e
+                              })
+                      }
+                      if (c.button2.title && "" != c.button2.title) {
+                          var e = c.button1.icon ? "https://deliver.feedify.net/images/push/icons/" + c.button2.icon : "";
+                          console.log(e),
+                              d.push({
+                                  action: "button2",
+                                  title: c.button2.title,
+                                  icon: e
+                              })
+                      }
+                      d && (b.actions = d)
+                  }
+                  return self.registration.showNotification(a.title, b)
+              })
+          })
+      }))
+}), self.addEventListener("pushsubscriptionchange", function (a) {
+  i = 0,
+      a.waitUntil(K().then(T).catch(function () { }))
+}), self.addEventListener("notificationclick", function (a) {
+  a.notification.close();
+  var b = a.notification,
+      c = b.data;
+  if (c.id) {
+      fetch("https://deliver.feedify.net/click?id=" + c.id + "&type=" + c.type).then(function () { });
+      var d = c.button;
+      if ("button1" == a.action)
+          var e = d.button1.action;
+      else if ("button2" == a.action)
+          var e = d.button2.action;
+      else
+          var e = c.url;
+      e && "false" != e && a.waitUntil(clients.matchAll({
+          type: "window"
+      }).then(function (a) {
+          for (var b, c = 0; c < a.length; c++)
+              if (b = a[c], b.url === e && "focus" in b)
+                  return b.focus();
+          if (clients.openWindow)
+              return e = addhttp(e), clients.openWindow(e)
+      }))
+  }
+});
+function onMessageReceivedSubscriptionState() {
+  let a = null;
+  self.registration.pushManager.getSubscription().then(b => (a = b, b ? self.registration.pushManager.permissionState(b.options) : null)).then(b => {
+      if (null == b)
+          broadcastReply(WorkerMessengerCommand.AMP_SUBSCRIPION_STATE, !1);
+      else {
+          const c = !!a && "granted" === b;
+          broadcastReply(WorkerMessengerCommand.AMP_SUBSCRIPION_STATE, c)
+      }
+  })
+}
+function onMessageReceivedSubscribe() {
+  self.registration.pushManager.subscribe({
+      userVisibleOnly: !0,
+      applicationServerKey: urlBase64ToUint8Array("BBwGGLs3Sn8VVr7V4mpltQhs0WNqccGN7jsRCUxpJmJryDS5IToBTldi99_QIR5Bmaxxoi_NNuS6Moh-0gc6wa8")
+  }).then(a => {
+      var b = a.endpoint;
+      T(b),
+          broadcastReply(WorkerMessengerCommand.AMP_SUBSCRIBE, null)
+  })
+}
+function onMessageReceivedUnsubscribe() {
+  self.registration.pushManager.getSubscription().then(a => a.unsubscribe()).then(() => {
+      broadcastReply(WorkerMessengerCommand.AMP_UNSUBSCRIBE, null)
+  })
+}
+function broadcastReply(a, b) {
+  self.clients.matchAll().then(c => {
+      for (let d = 0; d < c.length; d++) {
+          const e = c[d];
+          e.postMessage({
+              command: a,
+              payload: b
+          })
+      }
+  })
+}
+function K() {
+  return self.registration.pushManager.getSubscription().then(function (b) {
+      return b ? Promise.resolve(b.endpoint) : Promise.resolve(null)
+  })
+}
+function NS() {
+  self.registration.pushManager.subscribe({
+      userVisibleOnly: !0
+  }).then(function (a) {
+      console.log("Subscribed after expiration", a.endpoint);
+      var b = a.endpoint;
+      T(b)
+  })
+}
+function T(a) {
+  if (i++ , null == a)
+      return void (3 > i && NS());
+  var b = self.indexedDB.open("FDY_PUSH_DB");
+  b.onsuccess = function () {
+      var c = b.result;
+      if (c.objectStoreNames.length) {
+          var d = c.transaction("fd_option"),
+              e = d.objectStore("fd_option");
+          e.openCursor().onsuccess = function (b) {
+              var c = b.target.result;
+              if (null != c) {
+                  var d = c.value.pushEndpoint,
+                      e = c.value.pushUserId,
+                      f = c.value.pushRegistration;
+                  N(a, f, e)
+              }
+          }
+      }
+  }
+}
+function N(a, b, c) {
+  var d = a.split("/"),
+      a = d[d.length - 1];
+  a != b && A(a, b, c)
+}
+function A(a, b, c) {
+  fetch("https://feedify.net/push/updateRegistration", {
+      method: "post",
+      headers: {
+          "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
       },
-      actions: [
-        {action: 'explore', title: 'Remind me now',
-          icon: 'images/checkmark.png'},
-        {action: 'close', title: 'Close',
-          icon: 'images/xmark.png'},
-      ]
-    };
-    e.waitUntil(
-      self.registration.showNotification('Today enjoy on whatsup !!', options)
-    );
-  });
-
-  self.addEventListener('notificationclose', function(e) {
-    var notification = e.notification;
-    var primaryKey = notification.data.primaryKey;
-  
-    console.log('Closed notification: ' + primaryKey);
-  });
-
-  self.addEventListener('notificationclick', function(e) {
-    var notification = e.notification;
-    var primaryKey = notification.data.primaryKey;
-    var action = e.action;
-  
-    if (action === 'close') {
-      notification.close();
-    } else {
-      e.waitUntil(clients.openWindow(e.notification.data.url));
-      //clients.openWindow('https://web.whatsup.com/');
-      notification.close();
-    }
-  });
-
-  self.addEventListener('message', event => {
-    if (event.data) {
-      console.log("message "+event.data.json());
-    }
-    if (event.data === 'skipWaiting') {
-      self.skipWaiting();
-    }
-  });
-
-  self.addEventListener('install', function(event) {
-    // The promise that skipWaiting() returns can be safely ignored.
-    console.log("install");
-    self.skipWaiting();
-
-  });
-
-  self.addEventListener('activate', function(event) {
-    // The promise that skipWaiting() returns can be safely ignored.
-    self.skipWaiting();
-    console.log("activate");
-
-  });
+      body: "n_registration=" + a + "&o_registration=" + b + "&uuid=" + c
+  }).then(function (b) {
+      b.json().then(function () {
+          U(a, c)
+      })
+  }).catch(function (a) {
+      console.log("Request failed", a)
+  })
+}
+function U(a, b) {
+  var d = self.indexedDB.open("FDY_PUSH_DB");
+  d.onsuccess = function () {
+      var c = d.result;
+      if (c.objectStoreNames.length) {
+          var e = c.transaction("fd_option", "readwrite"),
+              f = e.objectStore("fd_option");
+          f.openCursor().onsuccess = function (c) {
+              var d = c.target.result;
+              if (null != d && d.value.pushUserId == b) {
+                  var e = d.value;
+                  e.pushRegistration = a,
+                      e.pushEndpoint = a;
+                  var f = d.update(e);
+                  f.onsuccess = function () {
+                      console.log("Updated")
+                  }
+              }
+          }
+      }
+  }
+}
+function addhttp(a) {
+  if (!a)
+      return a;
+  var b = /^((http|https|ftp):\/\/)/;
+  return b.test(a) || (a = "http://" + a),
+      a
+}
+function urlBase64ToUint8Array(a) {
+  const b = "=".repeat((4 - a.length % 4) % 4),
+      c = (a + b).replace(/\-/g, "+").replace(/_/g, "/"),
+      d = self.atob(c);
+  return Uint8Array.from([...d].map(a => a.charCodeAt(0)))
+}
