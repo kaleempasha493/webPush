@@ -4,6 +4,7 @@ const WorkerMessengerCommand = {
   AMP_UNSUBSCRIBE: "amp-web-push-unsubscribe"
 };
 var i = 0;
+var urlPr='';
 self.addEventListener("message", a => {
 
 }), 
@@ -20,10 +21,10 @@ self.addEventListener("push", function (a) {
               'Accept': 'application/json'
              }
           }).then(function(response) {
-            return response.json()
-          }).then(function(json) {
-            console.log('parsed json', json);
-
+            return response.json();
+          }).then(function(result) {
+            console.log('parsed json', result);
+            console.log('url json', result.url);
             self.registration.showNotification('Today enjoy on whatsup !!', json);
 
           }).catch(function(ex) {
@@ -35,28 +36,20 @@ self.addEventListener("push", function (a) {
   i = 0,
       a.waitUntil(K().then(T).catch(function () { }))
 }), self.addEventListener("notificationclick", function (a) {
-  a.notification.close();
-  var b = a.notification,
-      c = b.data;
-  if (c.id) {
-      fetch("https://deliver.feedify.net/click?id=" + c.id + "&type=" + c.type).then(function () { });
-      var d = c.button;
-      if ("button1" == a.action)
-          var e = d.button1.action;
-      else if ("button2" == a.action)
-          var e = d.button2.action;
-      else
-          var e = c.url;
-      e && "false" != e && a.waitUntil(clients.matchAll({
-          type: "window"
-      }).then(function (a) {
-          for (var b, c = 0; c < a.length; c++)
-              if (b = a[c], b.url === e && "focus" in b)
-                  return b.focus();
-          if (clients.openWindow)
-              return e = addhttp(e), clients.openWindow(e)
-      }))
+  var notification = a.notification;
+  var primaryKey = notification.data.primaryKey;
+  var action = a.action;
+
+  if (action === 'close') {
+    notification.close();
+  } else {
+    a.waitUntil(clients.openWindow(a.notification.data.url));
+    //clients.openWindow('https://web.whatsup.com/');
+    notification.close();
   }
+ 
+
+
 });
 function onMessageReceivedSubscriptionState() {
   let a = null;
