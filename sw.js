@@ -15,7 +15,7 @@ self.addEventListener("push", function (a) {
           if (null == a)
               return void K().then(T).catch(function () { });
           return fetch(proxyUrl + targetUrl).then(function(response) {
-            let text = await response.text();
+            var text = response.text();
             console.log('text ', text)
           }).catch(function(ex) {
             console.log('parsing failed', ex)
