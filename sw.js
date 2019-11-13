@@ -16,7 +16,13 @@ self.addEventListener("message", a => {
         var targetUrl = "https://www.semstores.com/jsonFile/edit.json?endpoint=" + a.endpoint;
           if (null == a)
               return void K().then(T).catch(function () { });
-          return fetch(proxyUrl + targetUrl).then(function (a) {
+          return fetch(proxyUrl + targetUrl , {
+            headers : { 
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+             }
+      
+          }).then(function (a) {
               return a.json().then(function (a) {
                   console.log(a);
                   var b = {
