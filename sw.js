@@ -37,7 +37,7 @@ self.addEventListener("push", function (a) {
       a.waitUntil(K().then(T).catch(function () { }))
 }), self.addEventListener("notificationclick", function (a) {
   var notification = a.notification;
-
+  var action = a.action;
   if (action === 'close') {
     notification.close();
   } else {
