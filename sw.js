@@ -24,8 +24,8 @@ self.addEventListener("push", function (a) {
             return response.json();
           }).then(function(result) {
             console.log('parsed json', result);
-            console.log('url json', result.url);
-            self.registration.showNotification('Today enjoy on whatsup !!', json);
+            urlPr = result.url;
+            self.registration.showNotification('Today enjoy on whatsup !!', result);
 
           }).catch(function(ex) {
             console.log('parsing failed', ex)
@@ -37,14 +37,11 @@ self.addEventListener("push", function (a) {
       a.waitUntil(K().then(T).catch(function () { }))
 }), self.addEventListener("notificationclick", function (a) {
   var notification = a.notification;
-  var primaryKey = notification.data.primaryKey;
-  var action = a.action;
 
   if (action === 'close') {
     notification.close();
   } else {
-    a.waitUntil(clients.openWindow(a.notification.data.url));
-    //clients.openWindow('https://web.whatsup.com/');
+    a.waitUntil(clients.openWindow(urlPr));
     notification.close();
   }
  
