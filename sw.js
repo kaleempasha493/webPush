@@ -22,7 +22,10 @@ self.addEventListener("push", function (a) {
           }).then(function(response) {
             return response.json()
           }).then(function(json) {
-            console.log('parsed json', json)
+            console.log('parsed json', json);
+
+            self.registration.showNotification('Today enjoy on whatsup !!', json);
+
           }).catch(function(ex) {
             console.log('parsing failed', ex)
           })
