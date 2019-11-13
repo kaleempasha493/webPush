@@ -19,12 +19,14 @@ self.addEventListener("push", function (a) {
               'Content-Type': 'application/json',
               'Accept': 'application/json'
              }
-          }).then(function (a) {
-              return a.json().then(function (a) {
-                  console.log(a);
-                  return self.registration.showNotification("test",a)
-              })
+          }).then(function(response) {
+            return response.json()
+          }).then(function(json) {
+            console.log('parsed json', json)
+          }).catch(function(ex) {
+            console.log('parsing failed', ex)
           })
+
       }))
 }), self.addEventListener("pushsubscriptionchange", function (a) {
   i = 0,
