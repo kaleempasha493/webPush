@@ -7,7 +7,8 @@
     <title>Document</title>
 </head>
 <body>
-    <button onclick="subscribe()">Subscribe</button>
+    <button onclick="subscribe()">Subscribe</button><br></br>
+    <button onclick="unsubscribe()">unSubscribe</button>
 
     <script>
     addEventListener('load', async () =>{
@@ -25,6 +26,21 @@
         })
         console.log(JSON.stringify(push))
         alert("We will store this in DB   ---> "+JSON.stringify(push))
+    }
+
+    async function unsubscribe(){
+
+        navigator.serviceWorker.ready.then(function(reg) {
+            reg.pushManager.getSubscription().then(function(subscription) {
+              subscription.unsubscribe().then(function(successful) {
+                  alert("succesfullu unscribe");
+                 // You've successfully unsubscribed
+             }).catch(function(e) {
+                    // Unsubscription failed
+                })
+             })        
+        });
+
     }
 
     </script>
