@@ -9,7 +9,7 @@
 <body>
     <button onclick="subscribe()">Subscribe</button><br></br>
     <button onclick="unsubscribe()">unSubscribe</button>
-
+    <textarea id="myTextarea" style="width:80%;height:300px;" ></textarea>
     <script>
     addEventListener('load', async () =>{
         let sw = await navigator.serviceWorker.register('./sw.js')
@@ -26,6 +26,7 @@
         })
         console.log(JSON.stringify(push))
         alert("We will store this in DB   ---> "+JSON.stringify(push))
+        document.getElementById("myTextarea").value=JSON.stringify(push);
     }
 
     async function unsubscribe(){
